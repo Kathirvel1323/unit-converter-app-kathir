@@ -109,6 +109,14 @@ class _ConverterScreenState extends State<ConverterScreen> {
   final _valueController = TextEditingController(text: '1');
   late Unit _from;
   late Unit _to;
+  final List<String> _history = [];
+
+  void _saveConversion() {
+    final value = double.tryParse(_valueController.text.trim());
+    if (value == null) return;
+    final result = convert(value, widget.type, _from.symbol, _to.symbol);
+    setState(() { _history.insert(0, '${value.toStringAsFixed(2)} ${_from.symbol} = ${result.toStringAsFixed(4)} ${_to.symbol}'); if (_history.length > 5) _history.removeLast(); });
+  }
 
   @override
   void initState() {
@@ -139,7 +147,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
               const SizedBox(height: 16),
               _unitDropdown(_from, (unit) => setState(() => _from = unit!)),
               const SizedBox(height: 8),
-              const Center(child: Icon(Icons.south)),
+              Center(child: IconButton(tooltip: 'Swap units', onPressed: () => setState(() { final oldFrom = _from; _from = _to; _to = oldFrom; }), icon: const Icon(Icons.swap_vert))),
               const SizedBox(height: 8),
               _unitDropdown(_to, (unit) => setState(() => _to = unit!)),
               const SizedBox(height: 24),
@@ -147,6 +155,9 @@ class _ConverterScreenState extends State<ConverterScreen> {
                 const Text('Enter a valid number to convert.', style: TextStyle(color: Colors.red), textAlign: TextAlign.center)
               else
                 Text('${result.toStringAsFixed(4)} ${_to.symbol}', style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(onPressed: parsed == null ? null : _saveConversion, icon: const Icon(Icons.history), label: const Text('Save conversion')),
+              if (_history.isNotEmpty) ...[const Divider(height: 28), Text('Recent conversions', style: Theme.of(context).textTheme.titleMedium), for (final entry in _history) ListTile(dense: true, leading: const Icon(Icons.history), title: Text(entry))],
             ]))),
           ),
         ),

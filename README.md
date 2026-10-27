@@ -13,3 +13,7 @@ Open [DartPad](https://dartpad.dev/), choose Flutter, paste `lib/main.dart`, and
 - Invalid input displays an inline message.
 - Verify meters/kilometers, grams/kilograms, Celsius/Fahrenheit, and navigation back home.
 - Run `flutter test`; GitHub Actions analyzes, tests, builds, and publishes the web preview.
+
+## Extended features
+
+See [docs/FEATURES.md](docs/FEATURES.md) for the enhancement list, source layout, and a quick demo checklist.
